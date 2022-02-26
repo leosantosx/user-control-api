@@ -60,8 +60,16 @@ export class UsersService {
     });
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  update(id: string, dto: UpdateUserDto) {
+    const data: Prisma.UserUpdateInput = {
+      ...dto,
+    };
+    return this.prisma.user.update({
+      where: {
+        id,
+      },
+      data,
+    });
   }
 
   async remove(id: string): Promise<void> {

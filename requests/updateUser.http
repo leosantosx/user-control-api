@@ -1,8 +1,8 @@
-POST http://localhost:3000/users
+PATCH http://localhost:3000/users/6af8eb9e-a1ce-4324-b0af-504418c5b855
 Content-Type: application/json
 
 {
-    "name": "Leo santos",
+    "name": "Leo silva",
     "email": "leonardo@gmail.com",
     "username": "leosantosx",
     "password": "leosantosx",
