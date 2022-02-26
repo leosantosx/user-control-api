@@ -14,6 +14,29 @@ export class UsersService {
       ...dto,
     };
 
+    const usernameAlreadyExists = await this.prisma.user.findFirst({
+      where: {
+        username: {
+          mode: 'insensitive',
+          equals: data.username,
+        },
+      },
+    });
+
+    if (usernameAlreadyExists) {
+      throw new Error('Username already exists');
+    }
+
+    const emailAlreadyExists = await this.prisma.user.findFirst({
+      where: {
+        email: data.email,
+      },
+    });
+
+    if (emailAlreadyExists) {
+      throw new Error('E-mail already exists');
+    }
+
     return await this.prisma.user.create({
       data,
     });
