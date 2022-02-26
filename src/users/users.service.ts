@@ -3,7 +3,7 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+import { hash } from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -37,8 +37,13 @@ export class UsersService {
       throw new Error('E-mail already exists');
     }
 
+    const passwordHash = await hash(data.password, 10);
+
     return await this.prisma.user.create({
-      data,
+      data: {
+        ...data,
+        password: passwordHash,
+      },
     });
   }
 
