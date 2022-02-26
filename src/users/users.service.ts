@@ -3,13 +3,14 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './entities/user.entity';
 import { hash } from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(dto: CreateUserDto) {
+  async create(dto: CreateUserDto): Promise<User> {
     const data: Prisma.UserCreateInput = {
       ...dto,
     };
@@ -47,19 +48,29 @@ export class UsersService {
     });
   }
 
-  async findAll() {
+  async findAll(): Promise<User[]> {
     return await this.prisma.user.findMany();
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string): Promise<User> {
+    return await this.prisma.user.findFirst({
+      where: {
+        id,
+      },
+    });
   }
 
   update(id: string, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} user`;
+  async remove(id: string): Promise<void> {
+    await this.prisma.user.delete({
+      where: {
+        id,
+      },
+    });
+
+    return;
   }
 }
