@@ -5,6 +5,7 @@ Content-Type: application/json
     "name": "Leo santos",
     "email": "leonardo@gmail.com",
     "username": "leosantosx",
-    "password": "leosantosx",
+    "password": "@Leosantosx",
+    "enabled": false,
     "description": ""
 }
