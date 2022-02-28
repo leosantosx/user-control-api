@@ -53,6 +53,14 @@ export class UsersService {
   }
 
   async findOne(id: string): Promise<User> {
+    const userExists = await this.prisma.user.findFirst({
+      where: { id },
+    });
+
+    if (!userExists) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
     return await this.prisma.user.findFirst({
       where: {
         id,
@@ -60,10 +68,19 @@ export class UsersService {
     });
   }
 
-  update(id: string, dto: UpdateUserDto) {
+  async update(id: string, dto: UpdateUserDto) {
+    const userExists = await this.prisma.user.findFirst({
+      where: { id },
+    });
+
+    if (!userExists) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
     const data: Prisma.UserUpdateInput = {
       ...dto,
     };
+
     return this.prisma.user.update({
       where: {
         id,
@@ -76,10 +93,9 @@ export class UsersService {
     const userExists = await this.prisma.user.findFirst({
       where: { id },
     });
-    console.log(userExists);
 
     if (!userExists) {
-      throw new HttpException('User does not found', HttpStatus.NOT_FOUND);
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
 
     await this.prisma.user.delete({
