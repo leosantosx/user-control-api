@@ -3,7 +3,6 @@ import {
   IsNotEmpty,
   IsEmail,
   IsBoolean,
-  isNotEmpty,
   MinLength,
   MaxLength,
   Matches,
