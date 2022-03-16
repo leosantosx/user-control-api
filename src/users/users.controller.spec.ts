@@ -31,7 +31,7 @@ describe('UsersController', () => {
     expect(usersController).toBeDefined();
   });
 
-  describe('getCats', () => {
+  describe('getUsers', () => {
     it('should get an array of users', async () => {
       await expect(usersController.findAll()).resolves.toEqual([
         {
