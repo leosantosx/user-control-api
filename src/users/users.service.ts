@@ -10,7 +10,7 @@ import { hash } from 'bcrypt';
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(dto: CreateUserDto): Promise<User> {
+  async create(dto: CreateUserDto): Promise<Partial<User>> {
     const data: Prisma.UserCreateInput = {
       ...dto,
     };
@@ -45,10 +45,20 @@ export class UsersService {
         ...data,
         password: passwordHash,
       },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        username: true,
+        enabled: true,
+        description: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
   }
 
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<Partial<User[]>> {
     return await this.prisma.user.findMany();
   }
 
@@ -89,7 +99,7 @@ export class UsersService {
     });
   }
 
-  async remove(id: string): Promise<void> {
+  async delete(id: string): Promise<void> {
     const userExists = await this.prisma.user.findFirst({
       where: { id },
     });
