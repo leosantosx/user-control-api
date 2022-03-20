@@ -19,7 +19,7 @@ const mockedUsers = [
 ];
 
 describe('UsersController', () => {
-  let usersController: UsersController
+  let usersController: UsersController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

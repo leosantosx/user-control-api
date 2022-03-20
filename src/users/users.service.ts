@@ -25,7 +25,7 @@ export class UsersService {
     });
 
     if (usernameAlreadyExists) {
-      throw new Error('Username already exists');
+      return new HttpException('Username already exists', HttpStatus.CONFLICT);
     }
 
     const emailAlreadyExists = await this.prisma.user.findFirst({
@@ -35,16 +35,24 @@ export class UsersService {
     });
 
     if (emailAlreadyExists) {
-      throw new Error('E-mail already exists');
+      return new HttpException('E-mail already exists', HttpStatus.CONFLICT);
     }
 
-    const passwordHash = await hash(data.password, 10);
-
-    return await this.prisma.user.create({
+    const createdUser = await this.prisma.user.create({
       data: {
         ...data,
-        password: passwordHash,
+        password: await hash(data.password, 10),
       },
+    });
+
+    return {
+      ...createdUser,
+      password: undefined,
+    };
+  }
+
+  async findAll(): Promise<UpdateUserDto[]> {
+    return await this.prisma.user.findMany({
       select: {
         id: true,
         name: true,
@@ -56,10 +64,6 @@ export class UsersService {
         updatedAt: true,
       },
     });
-  }
-
-  async findAll(): Promise<Partial<User[]>> {
-    return await this.prisma.user.findMany();
   }
 
   async findOne(id: string): Promise<User> {
@@ -78,7 +82,7 @@ export class UsersService {
     });
   }
 
-  async update(id: string, dto: UpdateUserDto) {
+  async update(id: string, dto: UpdateUserDto): Promise<UpdateUserDto> {
     const userExists = await this.prisma.user.findFirst({
       where: { id },
     });
@@ -91,12 +95,17 @@ export class UsersService {
       ...dto,
     };
 
-    return this.prisma.user.update({
+    const updatedUser = await this.prisma.user.update({
       where: {
         id,
       },
       data,
     });
+
+    return {
+      ...updatedUser,
+      password: undefined,
+    };
   }
 
   async delete(id: string): Promise<void> {
